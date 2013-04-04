@@ -2,81 +2,38 @@
 BIN  := $(shell pwd)/node_modules/.bin
 LOG  := $(shell pwd)/log
 
-GLOBALS  := "__coverage__,_\$$jscoverage,buffertools,SlowBuffer,events,util,task"
-TEST_ENV := test
+# files
+TEST_FILES := $(wildcard test/*.js)
 
-# Project files definition
-TEST_FILES := $(wildcard test/**/*.coffee) $(wildcard test/*.coffee)
-SRC_FILES  := $(wildcard src/**/*.coffee) $(wildcard src/*.coffee)
-LIB_FILES  := $(SRC_FILES:src/%.coffee=lib/%.js)
-COV_FILES  := $(SRC_FILES:src/%.coffee=src-cov/%.js)
-
-# Test parameters so we can configure these via make
-TEST_TIMEOUT  = 100
-TEST_REPORTER = list
-TDD_REPORTER  = min
-
-# Command-line tools options
-MOCHA_OPTS      = --timeout $(TEST_TIMEOUT) \
-                  --reporter $(TEST_REPORTER) \
-                  --globals $(GLOBALS) \
-                  --compilers coffee:coffee-script
-SUPERVISOR_OPTS = -q -n exit -e 'coffee|litcoffee|js|node' \
-                  -i '.git,node_modules,public,script,src-cov,html-report'
-COFFEE_OPTS     = --bare --compile
+# cli opts
+TAP_OPTS        = --timeout 1 --stderr
+SUPERVISOR_OPTS = -q -n exit -e 'js|node|pegjs' -w . \
+                  -i '.git,node_modules,public,script,lib-cov,html-report'
+PEGJS_OPTS      = --track-line-and-column --cache
 
 
-default: node_modules all
-
-all: $(LIB_FILES)
+default: test
 
 node_modules:
 	npm install
 
 
 # File transformations
-lib: $(LIB_FILES)
-lib/%.js: src/%.coffee | node_modules
-	$(BIN)/coffee $(COFFEE_OPTS) --output $(@D) $?
+lib/grammar.js: lib/grammar.pegjs
+	$(BIN)/pegjs < lib/grammar.pegjs > lib/grammar.js
 
 
 # Testing
-test: $(SRC_FILES) $(TEST_FILES) | node_modules
-	NODE_ENV=$(TEST_ENV) $(BIN)/mocha $(MOCHA_OPTS) $(TEST_FILES)
+test: lib/grammar.js | node_modules
+	$(BIN)/tap $(TAP_OPTS) $(TEST_FILES)
 
-tdd: TEST_REPORTER=$(TDD_REPORTER)
 tdd:
-	NODE_ENV=$(TEST_ENV) $(BIN)/supervisor $(SUPERVISOR_OPTS) \
-	  -x $(BIN)/mocha -- $(MOCHA_OPTS) $(TEST_FILES)
-
-
-# Code coverage
-src-cov: src-cov/.timestamp
-src-cov/.timestamp: $(SRC_FILES) | node_modules
-	NODE_ENV=$(TEST_ENV) $(BIN)/coffeeCoverage ./src ./src-cov
-	touch src-cov/.timestamp # trick regeneration of src-cov target
-
-travis-cov: TEST_REPORTER=travis-cov
-travis-cov: src-cov/.timestamp $(TEST_FILES)
-	NODE_ENV=$(TEST_ENV) SCV_COVER=1 $(BIN)/mocha $(MOCHA_OPTS)
-
-html-cov: coverage.html
-coverage.html: TEST_REPORTER=html-cov
-coverage.html: src-cov/.timestamp $(TEST_FILES)
-	NODE_ENV=$(TEST_ENV) SCV_COVER=1 $(BIN)/mocha $(MOCHA_OPTS) | tee coverage.html
-
-json-cov: coverage.json
-coverage.json: TEST_REPORTER=json-cov
-coverage.json: src-cov/.timestamp $(TEST_FILES)
-	NODE_ENV=$(TEST_ENV) SCV_COVER=1 $(BIN)/mocha $(MOCHA_OPTS) | tee coverage.json
+	$(BIN)/supervisor $(SUPERVISOR_OPTS) -x $(BIN)/tap -- $(TEST_FILES)
 
 
 # Cleans
 clean:
-	-rm -Rf lib/
-	-rm -Rf src-cov/
-	-rm -Rf lib-cov/
-	-rm -Rf html-report/
-	-rm coverage.html
-	-rm coverage.json
+	-rm lib/grammar.js
+
+.PHONY: clean tdd test
 
