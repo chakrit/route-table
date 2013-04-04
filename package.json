@@ -22,7 +22,8 @@
   "devDependencies": {
     "pegjs": "~0.7.0",
     "supervisor": "~0.5.2",
-    "mocha": "~1.9.0",
-    "coffee-script": "~1.6.2"
+    "tap": "~0.4.1",
+    "sinon": "~1.6.0",
+    "express": "~3.1.0"
   }
 }
