@@ -1,0 +1,28 @@
+{
+  "name": "route-table",
+  "version": "0.1.0",
+  "description": "Put your routes in its own file and use route-table to parses it.",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/chakrit/route-table"
+  },
+  "keywords": [
+    "routing",
+    "routes",
+    "routable",
+    "route",
+    "table"
+  ],
+  "author": "Chakrit Wichian <service@chakrit.net> (http://chakrit.net)",
+  "license": "BSD",
+  "devDependencies": {
+    "pegjs": "~0.7.0",
+    "supervisor": "~0.5.2",
+    "mocha": "~1.9.0",
+    "coffee-script": "~1.6.2"
+  }
+}
