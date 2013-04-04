@@ -1,0 +1,7 @@
+
+GET   /        home.index
+GET   /?two    home.two
+
+GET   /three   section.three
+GET   /four    section.four
+
