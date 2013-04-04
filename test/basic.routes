@@ -1,0 +1,14 @@
+
+GET   /home                 home.index
+GET   /home?tab=featured    home.featured
+GET   /home?tab=search      home.search
+
+GET   /posts                posts.index
+GET   /posts/new            posts.new
+POST  /posts/new            posts.create
+POST  /posts/:id            posts.view
+GET   /posts/:id/edit       posts.edit
+POST  /posts/:id/edit       posts.update
+GET   /posts/:id/comments   posts.comments
+POST  /posts/:id/comments   posts.create_comments
+
