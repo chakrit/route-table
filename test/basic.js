@@ -1,4 +1,5 @@
 
+// test/basic.js - Basic route table parsing tests.
 var test = require('tap').test
   , sinon = require('sinon');
 
@@ -30,8 +31,8 @@ test('path routing', function(t) {
 
   function route(uri, group, action) {
     var result = router.route(uri);
-    t.equal(result.group, group, 'correct matched route group');
-    t.equal(result.action, action, 'correct matched route action');
+    t.equal(result.mapping.group, group, 'correct matched route group');
+    t.equal(result.mapping.action, action, 'correct matched route action');
   }
 
   route('/home', 'home', 'index');
@@ -48,8 +49,8 @@ test('request object routing', function(t) {
   function route(obj, method, group, action) {
     var result = router.route(obj);
     t.equal(result.method, method, 'correct matched route method');
-    t.equal(result.group, group, 'correct matched route group');
-    t.equal(result.action, action, 'correct matched route action');
+    t.equal(result.mapping.group, group, 'correct matched route group');
+    t.equal(result.mapping.action, action, 'correct matched route action');
   }
 
   route({ method: 'GET', url: '/home' }, 'GET', 'home', 'index');
