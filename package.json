@@ -1,6 +1,6 @@
 {
   "name": "route-table",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Put your routes in its own file and use route-table to parses it.",
   "main": "index.js",
   "scripts": {
