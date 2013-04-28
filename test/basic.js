@@ -25,13 +25,14 @@ test('router interface', function(t) {
 
 
 test('path routing', function(t) {
-  t.plan(3 * 2);
+  t.plan(3 * 3);
 
   var router = getRouter();
 
-  function route(uri, group, action) {
+  function route(uri, controller, action) {
     var result = router.route(uri);
-    t.equal(result.mapping.group, group, 'correct matched route group');
+    t.assert(result, 'result matched');
+    t.equal(result.mapping.controller, controller, 'correct matched route controller');
     t.equal(result.mapping.action, action, 'correct matched route action');
   }
 
@@ -42,14 +43,15 @@ test('path routing', function(t) {
 
 
 test('request object routing', function(t) {
-  t.plan(3 * 3);
+  t.plan(3 * 4);
 
   var router = getRouter();
 
-  function route(obj, method, group, action) {
+  function route(obj, method, controller, action) {
     var result = router.route(obj);
+    t.assert(result, 'route matched');
     t.equal(result.method, method, 'correct matched route method');
-    t.equal(result.mapping.group, group, 'correct matched route group');
+    t.equal(result.mapping.controller, controller, 'correct matched route controller');
     t.equal(result.mapping.action, action, 'correct matched route action');
   }
 

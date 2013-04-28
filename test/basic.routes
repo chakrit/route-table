@@ -1,7 +1,20 @@
 
+# test beginning comment
+
 GET   /home                 home.index
 GET   /home?tab=featured    home.featured
 GET   /home?tab=search      home.search
+
+#
+# comments
+ # should
+  # be
+   # ignored
+    #
+
+GET   /route/with/comments  with.comments #hahaha
+GET   /route/with/comments  with.comments # hahaha
+GET   /route/with/comments  with.comments  #hahaha
 
 GET   /posts                posts.index
 GET   /posts/new            posts.new
