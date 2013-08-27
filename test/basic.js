@@ -17,10 +17,11 @@ test('require.extensions registration', function(t) {
 test('router interface', function(t) {
   var router = require('./basic.routes');
 
-  t.plan(3);
+  t.plan(4);
   t.type(router.route, 'function', 'exports a .route function');
   t.type(router.express, 'function', 'exports a .express function');
   t.type(router.handlers, 'function', 'exports a .handler function');
+  t.type(router.load, 'function', 'exports a .load function');
 });
 
 
@@ -82,6 +83,22 @@ test('express support', function(t) {
   t.ok(app.get.calledWith('/home'), 'GET routes registered to express app');
   t.ok(app.get.calledWith('/posts/:id/edit'), 'GET routes with parameter registered to express app');
   t.ok(app.post.calledWith('/posts/:id/edit'), 'POST routes with paramter registered to express app');
+});
+
+
+test('router.load shortcut', function(t) {
+  t.plan(2)
+
+  var app = { }
+    , handlers = { }
+    , router = getRouter();
+
+  sinon.stub(router, 'express');
+  sinon.stub(router, 'handlers');
+
+  router.load(app, handlers);
+  t.ok(router.express.calledWith(app), 'app passed to express()');
+  t.ok(router.handlers.calledWith(handlers), 'handlers passed to handlers()');
 });
 
 
